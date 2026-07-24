@@ -15,16 +15,56 @@ class HomeViewModel(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) : ViewModel() {
 
+    companion object {
+        private const val PAGE_SIZE = 10L
+    }
+
     private val _feedState = MutableLiveData<Resource<List<Post>>>()
     val feedState: LiveData<Resource<List<Post>>> = _feedState
+
+    private val _isLoadingMore = MutableLiveData(false)
+    val isLoadingMore: LiveData<Boolean> = _isLoadingMore
+
+    private var currentPosts: List<Post> = emptyList()
+    private var isLastPage = false
+    private var isBusy = false
 
     val currentUserId: String?
         get() = auth.currentUser?.uid
 
+    /** Loads the first page of the feed, replacing whatever was previously loaded. */
     fun loadFeed() {
+        if (isBusy) return
+        isBusy = true
+        isLastPage = false
         _feedState.value = Resource.Loading
         viewModelScope.launch {
-            _feedState.value = postRepository.getFeed()
+            val result = postRepository.getFeed(limit = PAGE_SIZE)
+            if (result is Resource.Success) {
+                currentPosts = result.data
+                isLastPage = result.data.size < PAGE_SIZE
+            }
+            _feedState.value = result
+            isBusy = false
+        }
+    }
+
+    /** Fetches the next page and appends it, for infinite-scroll. No-ops if already loading or at the end. */
+    fun loadMore() {
+        if (isBusy || isLastPage) return
+        val lastTimestamp = currentPosts.lastOrNull()?.timestamp ?: return
+        isBusy = true
+        _isLoadingMore.value = true
+        viewModelScope.launch {
+            val result = postRepository.getFeed(limit = PAGE_SIZE, startAfterTimestamp = lastTimestamp)
+            if (result is Resource.Success) {
+                val combined = currentPosts + result.data
+                currentPosts = combined
+                isLastPage = result.data.size < PAGE_SIZE
+                _feedState.value = Resource.Success(combined)
+            }
+            isBusy = false
+            _isLoadingMore.value = false
         }
     }
 
@@ -45,9 +85,10 @@ class HomeViewModel(
         val updatedList = currentList.toMutableList().apply {
             if (position in indices) this[position] = updatedPost
         }
+        currentPosts = updatedList
 
         viewModelScope.launch {
-            postRepository.toggleLike(post.postId, isLiked)
+            postRepository.toggleLike(post, isLiked)
         }
 
         return updatedList

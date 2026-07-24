@@ -1,7 +1,9 @@
 package com.gulshid.socialsphere.ui.search
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,8 +14,8 @@ import com.gulshid.socialsphere.databinding.ItemUserBinding
 
 class UserAdapter(
     private val onUserClicked: (User) -> Unit,
-    private val onFollowClicked: (User) -> Unit
-) : ListAdapter<User, UserAdapter.UserViewHolder>(UserDiff()) {
+    private val onFollowClicked: (FollowableUser) -> Unit
+) : ListAdapter<FollowableUser, UserAdapter.UserViewHolder>(UserDiff()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -27,7 +29,10 @@ class UserAdapter(
     inner class UserViewHolder(private val binding: ItemUserBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(user: User) {
+        fun bind(item: FollowableUser) {
+            val user = item.user
+            val context = binding.root.context
+
             binding.tvUsername.text = user.username
             binding.tvFullName.text = user.fullName
 
@@ -37,13 +42,28 @@ class UserAdapter(
                 .circleCrop()
                 .into(binding.ivAvatar)
 
+            if (item.isFollowing) {
+                binding.btnFollow.text = context.getString(R.string.following)
+                val mutedColor = ContextCompat.getColor(context, R.color.on_surface_variant)
+                val dividerColor = ContextCompat.getColor(context, R.color.divider)
+                binding.btnFollow.setTextColor(mutedColor)
+                binding.btnFollow.strokeColor = ColorStateList.valueOf(dividerColor)
+            } else {
+                binding.btnFollow.text = context.getString(R.string.follow)
+                val brandColor = ContextCompat.getColor(context, R.color.brand_primary)
+                binding.btnFollow.setTextColor(brandColor)
+                binding.btnFollow.strokeColor = ColorStateList.valueOf(brandColor)
+            }
+
             binding.root.setOnClickListener { onUserClicked(user) }
-            binding.btnFollow.setOnClickListener { onFollowClicked(user) }
+            binding.btnFollow.setOnClickListener { onFollowClicked(item) }
         }
     }
 
-    class UserDiff : DiffUtil.ItemCallback<User>() {
-        override fun areItemsTheSame(oldItem: User, newItem: User) = oldItem.uid == newItem.uid
-        override fun areContentsTheSame(oldItem: User, newItem: User) = oldItem == newItem
+    class UserDiff : DiffUtil.ItemCallback<FollowableUser>() {
+        override fun areItemsTheSame(oldItem: FollowableUser, newItem: FollowableUser) =
+            oldItem.user.uid == newItem.user.uid
+        override fun areContentsTheSame(oldItem: FollowableUser, newItem: FollowableUser) =
+            oldItem == newItem
     }
 }

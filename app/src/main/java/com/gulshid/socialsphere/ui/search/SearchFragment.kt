@@ -1,5 +1,6 @@
 package com.gulshid.socialsphere.ui.search
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,10 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gulshid.socialsphere.databinding.FragmentSearchBinding
+import com.gulshid.socialsphere.ui.profile.UserProfileActivity
 import com.gulshid.socialsphere.utils.Resource
-import com.gulshid.socialsphere.utils.gone
 import com.gulshid.socialsphere.utils.toast
-import com.gulshid.socialsphere.utils.visible
 
 class SearchFragment : Fragment() {
 
@@ -34,8 +34,12 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = UserAdapter(
-            onUserClicked = { /* TODO: navigate to public profile */ },
-            onFollowClicked = { user -> viewModel.toggleFollow(user, isFollowing = false) }
+            onUserClicked = { user ->
+                val intent = Intent(requireContext(), UserProfileActivity::class.java)
+                intent.putExtra(UserProfileActivity.EXTRA_UID, user.uid)
+                startActivity(intent)
+            },
+            onFollowClicked = { item -> viewModel.toggleFollow(item) }
         )
         binding.rvUsers.layoutManager = LinearLayoutManager(requireContext())
         binding.rvUsers.adapter = adapter
@@ -51,7 +55,7 @@ class SearchFragment : Fragment() {
         viewModel.searchResults.observe(viewLifecycleOwner) { state -> render(state) }
     }
 
-    private fun render(state: Resource<List<com.gulshid.socialsphere.data.model.User>>) {
+    private fun render(state: Resource<List<FollowableUser>>) {
         when (state) {
             is Resource.Loading -> Unit
             is Resource.Success -> {

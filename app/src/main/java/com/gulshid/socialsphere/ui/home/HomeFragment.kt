@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gulshid.socialsphere.data.model.Post
 import com.gulshid.socialsphere.databinding.FragmentHomeBinding
 import com.gulshid.socialsphere.post.PostDetailActivity
+import com.gulshid.socialsphere.ui.profile.UserProfileActivity
 import com.gulshid.socialsphere.utils.Resource
 import com.gulshid.socialsphere.utils.gone
 import com.gulshid.socialsphere.utils.toast
@@ -39,6 +41,24 @@ class HomeFragment : Fragment(), PostAdapter.PostActionListener {
         binding.rvFeed.adapter = adapter
 
         binding.swipeRefresh.setOnRefreshListener { viewModel.loadFeed() }
+
+        binding.rvFeed.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy <= 0) return
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
+                if (visibleItemCount + firstVisiblePosition >= totalItemCount - 3) {
+                    viewModel.loadMore()
+                }
+            }
+        })
+
+        viewModel.isLoadingMore.observe(viewLifecycleOwner) { loading ->
+            binding.progressBarLoadMore.visibility = if (loading) View.VISIBLE else View.GONE
+        }
 
         viewModel.feedState.observe(viewLifecycleOwner) { state -> render(state) }
         viewModel.loadFeed()
@@ -87,7 +107,9 @@ class HomeFragment : Fragment(), PostAdapter.PostActionListener {
     }
 
     override fun onAuthorClicked(post: Post) {
-        // TODO: Navigate to the author's public profile screen
+        val intent = Intent(requireContext(), UserProfileActivity::class.java)
+        intent.putExtra(UserProfileActivity.EXTRA_UID, post.authorId)
+        startActivity(intent)
     }
 
     private fun openPostDetail(post: Post) {

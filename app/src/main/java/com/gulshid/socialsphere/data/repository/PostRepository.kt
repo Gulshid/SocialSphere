@@ -2,33 +2,31 @@ package com.gulshid.socialsphere.data.repository
 
 import android.net.Uri
 import com.gulshid.socialsphere.data.model.Comment
+import com.gulshid.socialsphere.data.model.NotificationType
 import com.gulshid.socialsphere.data.model.Post
 import com.gulshid.socialsphere.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.storage.FirebaseStorage
+import com.gulshid.socialsphere.utils.CloudinaryUploader
 import kotlinx.coroutines.tasks.await
-import java.util.UUID
 
 /**
  * Handles all post-related data operations: creating posts, uploading
- * images to Firebase Storage, paginated feed retrieval, likes and comments.
+ * images to Cloudinary, paginated feed retrieval, likes and comments.
  */
 class PostRepository(
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance(),
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val notificationRepository: NotificationRepository = NotificationRepository()
 ) {
     private val postsCollection = firestore.collection("posts")
     private val usersCollection = firestore.collection("users")
 
-    /** Uploads an image to Storage and returns its public download URL. */
-    private suspend fun uploadImage(imageUri: Uri, path: String): String {
-        val ref = storage.reference.child(path)
-        ref.putFile(imageUri).await()
-        return ref.downloadUrl.await().toString()
+    /** Uploads an image to Cloudinary and returns its public download URL. */
+    private suspend fun uploadImage(imageUri: Uri, folder: String): String {
+        return CloudinaryUploader.uploadImage(imageUri, folder)
     }
 
     suspend fun createPost(imageUri: Uri, caption: String): Resource<Unit> {
@@ -38,8 +36,7 @@ class PostRepository(
             val username = userSnapshot.getString("username") ?: "user"
             val profileImageUrl = userSnapshot.getString("profileImageUrl") ?: ""
 
-            val fileName = "posts/$uid/${UUID.randomUUID()}.jpg"
-            val imageUrl = uploadImage(imageUri, fileName)
+            val imageUrl = uploadImage(imageUri, "posts/$uid")
 
             val postId = postsCollection.document().id
             val post = Post(
@@ -61,14 +58,20 @@ class PostRepository(
         }
     }
 
-    /** Fetches the most recent posts for the home feed, newest first. */
-    suspend fun getFeed(limit: Long = 20): Resource<List<Post>> {
+    /**
+     * Fetches a page of the most recent posts for the home feed, newest first.
+     * Pass [startAfterTimestamp] (the `timestamp` of the last post already
+     * loaded) to fetch the next page for infinite-scroll pagination.
+     */
+    suspend fun getFeed(limit: Long = 10, startAfterTimestamp: Long? = null): Resource<List<Post>> {
         return try {
-            val snapshot = postsCollection
+            var query = postsCollection
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .limit(limit)
-                .get()
-                .await()
+            if (startAfterTimestamp != null) {
+                query = query.startAfter(startAfterTimestamp)
+            }
+            val snapshot = query.get().await()
             val posts = snapshot.toObjects(Post::class.java)
             Resource.Success(posts)
         } catch (e: Exception) {
@@ -89,11 +92,15 @@ class PostRepository(
         }
     }
 
-    /** Toggles a like for the current user on the given post (optimistic-friendly). */
-    suspend fun toggleLike(postId: String, isCurrentlyLiked: Boolean): Resource<Unit> {
+    /**
+     * Toggles a like for the current user on [post] (optimistic-friendly).
+     * Sends the post's author a "like" notification, unless they're liking
+     * their own post or un-liking.
+     */
+    suspend fun toggleLike(post: Post, isCurrentlyLiked: Boolean): Resource<Unit> {
         val uid = auth.currentUser?.uid ?: return Resource.Error("Not authenticated.")
         return try {
-            val postRef = postsCollection.document(postId)
+            val postRef = postsCollection.document(post.postId)
             if (isCurrentlyLiked) {
                 postRef.update(
                     "likedBy", FieldValue.arrayRemove(uid),
@@ -104,6 +111,12 @@ class PostRepository(
                     "likedBy", FieldValue.arrayUnion(uid),
                     "likeCount", FieldValue.increment(1)
                 ).await()
+                notificationRepository.createNotification(
+                    recipientId = post.authorId,
+                    type = NotificationType.LIKE,
+                    postId = post.postId,
+                    postImageUrl = post.imageUrl
+                )
             }
             Resource.Success(Unit)
         } catch (e: Exception) {
@@ -111,12 +124,17 @@ class PostRepository(
         }
     }
 
+    /** Adds a comment and notifies the post's author (unless they're commenting on their own post). */
     suspend fun addComment(postId: String, text: String): Resource<Unit> {
         val uid = auth.currentUser?.uid ?: return Resource.Error("Not authenticated.")
         return try {
             val userSnapshot = usersCollection.document(uid).get().await()
             val username = userSnapshot.getString("username") ?: "user"
             val profileImageUrl = userSnapshot.getString("profileImageUrl") ?: ""
+
+            val postSnapshot = postsCollection.document(postId).get().await()
+            val postAuthorId = postSnapshot.getString("authorId") ?: ""
+            val postImageUrl = postSnapshot.getString("imageUrl") ?: ""
 
             val commentRef = postsCollection.document(postId).collection("comments").document()
             val comment = Comment(
@@ -128,6 +146,16 @@ class PostRepository(
             )
             commentRef.set(comment).await()
             postsCollection.document(postId).update("commentCount", FieldValue.increment(1)).await()
+
+            if (postAuthorId.isNotBlank()) {
+                notificationRepository.createNotification(
+                    recipientId = postAuthorId,
+                    type = NotificationType.COMMENT,
+                    postId = postId,
+                    postImageUrl = postImageUrl,
+                    commentText = text
+                )
+            }
 
             Resource.Success(Unit)
         } catch (e: Exception) {

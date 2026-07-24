@@ -44,6 +44,7 @@
     <string name="following">Following</string>
     <string name="bio">Bio</string>
     <string name="save">Save</string>
+    <string name="follow">Follow</string>
 
     <!-- Errors -->
     <string name="error_required_field">This field is required</string>

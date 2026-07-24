@@ -1,12 +1,13 @@
 package com.gulshid.socialsphere.data.repository
 
 import android.net.Uri
+import com.gulshid.socialsphere.data.model.NotificationType
 import com.gulshid.socialsphere.data.model.User
 import com.gulshid.socialsphere.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import com.gulshid.socialsphere.utils.CloudinaryUploader
 import kotlinx.coroutines.tasks.await
 
 /**
@@ -16,8 +17,8 @@ import kotlinx.coroutines.tasks.await
  */
 class UserRepository(
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance(),
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val notificationRepository: NotificationRepository = NotificationRepository()
 ) {
     private val usersCollection = firestore.collection("users")
 
@@ -44,9 +45,7 @@ class UserRepository(
             )
 
             if (newImageUri != null) {
-                val ref = storage.reference.child("profile_images/$uid.jpg")
-                ref.putFile(newImageUri).await()
-                val downloadUrl = ref.downloadUrl.await().toString()
+                val downloadUrl = CloudinaryUploader.uploadImage(newImageUri, "profile_images/$uid")
                 updates["profileImageUrl"] = downloadUrl
             }
 
@@ -78,6 +77,12 @@ class UserRepository(
                 batch.update(theirDocRef, "followersCount", FieldValue.increment(1))
             }
             batch.commit().await()
+            if (!isCurrentlyFollowing) {
+                notificationRepository.createNotification(
+                    recipientId = targetUid,
+                    type = NotificationType.FOLLOW
+                )
+            }
             Resource.Success(Unit)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Failed to update follow status.")
