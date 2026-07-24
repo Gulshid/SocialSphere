@@ -1,3 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Social Sphere</string>
+    <string name="app_name">SocialSphere</string>
+
+    <!-- Auth -->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="login_subtitle">Sign in to continue your journey</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="full_name">Full Name</string>
+    <string name="login">Log In</string>
+    <string name="register">Create Account</string>
+    <string name="no_account">Don\'t have an account? Sign Up</string>
+    <string name="have_account">Already have an account? Log In</string>
+    <string name="create_account_subtitle">Join SocialSphere and share your world</string>
+    <string name="forgot_password">Forgot Password?</string>
+
+    <!-- Home -->
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="create">Create</string>
+    <string name="notifications">Notifications</string>
+    <string name="profile">Profile</string>
+    <string name="whats_on_your_mind">What\'s on your mind?</string>
+    <string name="no_posts_yet">No posts yet. Be the first to share!</string>
+
+    <!-- Post -->
+    <string name="new_post">New Post</string>
+    <string name="write_a_caption">Write a caption…</string>
+    <string name="select_image">Select Image</string>
+    <string name="share">Share</string>
+    <string name="like">Like</string>
+    <string name="comment">Comment</string>
+    <string name="comments">Comments</string>
+    <string name="add_a_comment">Add a comment…</string>
+    <string name="post">Post</string>
+
+    <!-- Profile -->
+    <string name="edit_profile">Edit Profile</string>
+    <string name="logout">Log Out</string>
+    <string name="posts">Posts</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="bio">Bio</string>
+    <string name="save">Save</string>
+
+    <!-- Errors -->
+    <string name="error_required_field">This field is required</string>
+    <string name="error_invalid_email">Enter a valid email address</string>
+    <string name="error_short_password">Password must be at least 6 characters</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
 </resources>

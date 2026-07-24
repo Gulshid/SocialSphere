@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Brand -->
+    <color name="brand_primary">#6C5CE7</color>
+    <color name="brand_primary_dark">#4834D4</color>
+    <color name="brand_secondary">#00CEC9</color>
+    <color name="brand_accent">#FD79A8</color>
+
+    <!-- Neutrals -->
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#F7F7FC</color>
+    <color name="surface_variant">#EFEFF5</color>
+    <color name="on_background">#1A1A2E</color>
+    <color name="on_surface_variant">#6C6C80</color>
+    <color name="divider">#E5E5EF</color>
+
+    <!-- States -->
+    <color name="error">#FF5252</color>
+    <color name="success">#00B894</color>
+    <color name="like_red">#FF3B5C</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="scrim">#66000000</color>
+
+    <!-- Dark placeholder for shimmer -->
+    <color name="shimmer_base">#E0E0E0</color>
+    <color name="shimmer_highlight">#F5F5F5</color>
 </resources>
