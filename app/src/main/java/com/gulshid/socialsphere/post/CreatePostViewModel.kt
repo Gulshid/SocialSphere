@@ -1,12 +1,12 @@
-package com.example.socialsphere.post
+package com.gulshid.socialsphere.post
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialsphere.data.repository.PostRepository
-import com.example.socialsphere.utils.Resource
+import com.gulshid.socialsphere.data.repository.PostRepository
+import com.gulshid.socialsphere.utils.Resource
 import kotlinx.coroutines.launch
 
 class CreatePostViewModel(

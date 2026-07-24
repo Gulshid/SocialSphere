@@ -1,4 +1,4 @@
-package com.example.socialsphere.post
+package com.gulshid.socialsphere.post
 
 import android.net.Uri
 import android.os.Bundle
@@ -6,11 +6,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.example.socialsphere.databinding.ActivityCreatePostBinding
-import com.example.socialsphere.utils.Resource
-import com.example.socialsphere.utils.gone
-import com.example.socialsphere.utils.toast
-import com.example.socialsphere.utils.visible
+import com.gulshid.socialsphere.databinding.ActivityCreatePostBinding
+import com.gulshid.socialsphere.utils.Resource
+import com.gulshid.socialsphere.utils.gone
+import com.gulshid.socialsphere.utils.toast
+import com.gulshid.socialsphere.utils.visible
 
 /**
  * Lets the user pick an image from the gallery, add a caption, and publish

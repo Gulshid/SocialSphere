@@ -1,4 +1,4 @@
-package com.example.socialsphere.utils
+package com.gulshid.socialsphere.utils
 
 import android.content.Context
 import android.util.Patterns

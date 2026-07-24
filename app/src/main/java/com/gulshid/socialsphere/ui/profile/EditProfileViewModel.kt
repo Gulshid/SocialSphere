@@ -1,14 +1,14 @@
-package com.example.socialsphere.ui.profile
+package com.gulshid.socialsphere.ui.profile
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialsphere.data.model.User
-import com.example.socialsphere.data.repository.AuthRepository
-import com.example.socialsphere.data.repository.UserRepository
-import com.example.socialsphere.utils.Resource
+import com.gulshid.socialsphere.data.model.User
+import com.gulshid.socialsphere.data.repository.AuthRepository
+import com.gulshid.socialsphere.data.repository.UserRepository
+import com.gulshid.socialsphere.utils.Resource
 import kotlinx.coroutines.launch
 
 class EditProfileViewModel(

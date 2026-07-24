@@ -1,4 +1,4 @@
-package com.example.socialsphere.utils
+package com.gulshid.socialsphere.utils
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

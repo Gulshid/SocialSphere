@@ -1,10 +1,10 @@
-package com.example.socialsphere
+package com.gulshid.socialsphere
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.socialsphere.auth.LoginActivity
-import com.example.socialsphere.data.repository.AuthRepository
+import com.gulshid.socialsphere.auth.LoginActivity
+import com.gulshid.socialsphere.data.repository.AuthRepository
 
 /**
  * Transient entry point: checks whether a user session already exists

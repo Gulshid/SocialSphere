@@ -1,12 +1,12 @@
-package com.example.socialsphere.ui.home
+package com.gulshid.socialsphere.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialsphere.data.model.Post
-import com.example.socialsphere.data.repository.PostRepository
-import com.example.socialsphere.utils.Resource
+import com.gulshid.socialsphere.data.model.Post
+import com.gulshid.socialsphere.data.repository.PostRepository
+import com.gulshid.socialsphere.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 

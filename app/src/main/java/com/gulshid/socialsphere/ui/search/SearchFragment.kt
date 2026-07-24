@@ -1,4 +1,4 @@
-package com.example.socialsphere.ui.search
+package com.gulshid.socialsphere.ui.search
 
 import android.os.Bundle
 import android.text.Editable
@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.socialsphere.databinding.FragmentSearchBinding
-import com.example.socialsphere.utils.Resource
-import com.example.socialsphere.utils.gone
-import com.example.socialsphere.utils.toast
-import com.example.socialsphere.utils.visible
+import com.gulshid.socialsphere.databinding.FragmentSearchBinding
+import com.gulshid.socialsphere.utils.Resource
+import com.gulshid.socialsphere.utils.gone
+import com.gulshid.socialsphere.utils.toast
+import com.gulshid.socialsphere.utils.visible
 
 class SearchFragment : Fragment() {
 
@@ -51,7 +51,7 @@ class SearchFragment : Fragment() {
         viewModel.searchResults.observe(viewLifecycleOwner) { state -> render(state) }
     }
 
-    private fun render(state: Resource<List<com.example.socialsphere.data.model.User>>) {
+    private fun render(state: Resource<List<com.gulshid.socialsphere.data.model.User>>) {
         when (state) {
             is Resource.Loading -> Unit
             is Resource.Success -> {

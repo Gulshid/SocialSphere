@@ -1,4 +1,4 @@
-package com.example.socialsphere.post
+package com.gulshid.socialsphere.post
 
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.socialsphere.R
-import com.example.socialsphere.data.model.Comment
-import com.example.socialsphere.databinding.ItemCommentBinding
-import com.example.socialsphere.utils.toRelativeTimeString
+import com.gulshid.socialsphere.R
+import com.gulshid.socialsphere.data.model.Comment
+import com.gulshid.socialsphere.databinding.ItemCommentBinding
+import com.gulshid.socialsphere.utils.toRelativeTimeString
 
 class CommentAdapter : ListAdapter<Comment, CommentAdapter.CommentViewHolder>(CommentDiff()) {
 

@@ -1,11 +1,11 @@
-package com.example.socialsphere.ui.notifications
+package com.gulshid.socialsphere.ui.notifications
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.socialsphere.databinding.FragmentNotificationsBinding
+import com.gulshid.socialsphere.databinding.FragmentNotificationsBinding
 
 /**
  * Displays likes, comments, and new-follower notifications.

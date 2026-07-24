@@ -1,4 +1,4 @@
-package com.example.socialsphere.data.model
+package com.gulshid.socialsphere.data.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

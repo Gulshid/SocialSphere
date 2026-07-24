@@ -1,4 +1,4 @@
-package com.example.socialsphere.ui.search
+package com.gulshid.socialsphere.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.socialsphere.R
-import com.example.socialsphere.data.model.User
-import com.example.socialsphere.databinding.ItemUserBinding
+import com.gulshid.socialsphere.R
+import com.gulshid.socialsphere.data.model.User
+import com.gulshid.socialsphere.databinding.ItemUserBinding
 
 class UserAdapter(
     private val onUserClicked: (User) -> Unit,

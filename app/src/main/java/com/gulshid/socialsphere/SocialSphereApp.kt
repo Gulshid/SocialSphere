@@ -1,4 +1,4 @@
-package com.example.socialsphere
+package com.gulshid.socialsphere
 
 import android.app.Application
 import com.google.firebase.FirebaseApp

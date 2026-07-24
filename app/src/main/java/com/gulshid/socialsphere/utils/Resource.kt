@@ -1,4 +1,4 @@
-package com.example.socialsphere.utils
+package com.gulshid.socialsphere.utils
 
 /**
  * A generic wrapper class used to represent the state of any async

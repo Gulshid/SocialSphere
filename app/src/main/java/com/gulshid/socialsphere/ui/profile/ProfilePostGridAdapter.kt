@@ -1,4 +1,4 @@
-package com.example.socialsphere.ui.profile
+package com.gulshid.socialsphere.ui.profile
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.socialsphere.data.model.Post
-import com.example.socialsphere.databinding.ItemGridPostBinding
+import com.gulshid.socialsphere.data.model.Post
+import com.gulshid.socialsphere.databinding.ItemGridPostBinding
 
 class ProfilePostGridAdapter(
     private val onPostClicked: (Post) -> Unit

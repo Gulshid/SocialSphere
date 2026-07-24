@@ -1,4 +1,4 @@
-package com.example.socialsphere.ui.profile
+package com.gulshid.socialsphere.ui.profile
 
 import android.net.Uri
 import android.os.Bundle
@@ -6,13 +6,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.example.socialsphere.R
-import com.example.socialsphere.data.model.User
-import com.example.socialsphere.databinding.ActivityEditProfileBinding
-import com.example.socialsphere.utils.Resource
-import com.example.socialsphere.utils.gone
-import com.example.socialsphere.utils.toast
-import com.example.socialsphere.utils.visible
+import com.gulshid.socialsphere.R
+import com.gulshid.socialsphere.data.model.User
+import com.gulshid.socialsphere.databinding.ActivityEditProfileBinding
+import com.gulshid.socialsphere.utils.Resource
+import com.gulshid.socialsphere.utils.gone
+import com.gulshid.socialsphere.utils.toast
+import com.gulshid.socialsphere.utils.visible
 
 class EditProfileActivity : AppCompatActivity() {
 

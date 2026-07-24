@@ -1,16 +1,16 @@
-package com.example.socialsphere.post
+package com.gulshid.socialsphere.post
 
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.socialsphere.data.model.Post
-import com.example.socialsphere.databinding.ActivityPostDetailBinding
-import com.example.socialsphere.utils.Resource
-import com.example.socialsphere.utils.gone
-import com.example.socialsphere.utils.toast
-import com.example.socialsphere.utils.visible
+import com.gulshid.socialsphere.data.model.Post
+import com.gulshid.socialsphere.databinding.ActivityPostDetailBinding
+import com.gulshid.socialsphere.utils.Resource
+import com.gulshid.socialsphere.utils.gone
+import com.gulshid.socialsphere.utils.toast
+import com.gulshid.socialsphere.utils.visible
 
 /**
  * Shows a post's comment thread and lets the user add new comments.
@@ -61,7 +61,7 @@ class PostDetailActivity : AppCompatActivity() {
         viewModel.addComment(post.postId, text)
     }
 
-    private fun renderComments(state: Resource<List<com.example.socialsphere.data.model.Comment>>) {
+    private fun renderComments(state: Resource<List<com.gulshid.socialsphere.data.model.Comment>>) {
         when (state) {
             is Resource.Loading -> Unit
             is Resource.Success -> {

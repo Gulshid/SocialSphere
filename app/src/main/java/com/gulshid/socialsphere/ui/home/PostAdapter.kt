@@ -1,4 +1,4 @@
-package com.example.socialsphere.ui.home
+package com.gulshid.socialsphere.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.socialsphere.R
-import com.example.socialsphere.data.model.Post
-import com.example.socialsphere.databinding.ItemPostBinding
-import com.example.socialsphere.utils.toCompactCount
-import com.example.socialsphere.utils.toRelativeTimeString
+import com.gulshid.socialsphere.R
+import com.gulshid.socialsphere.data.model.Post
+import com.gulshid.socialsphere.databinding.ItemPostBinding
+import com.gulshid.socialsphere.utils.toCompactCount
+import com.gulshid.socialsphere.utils.toRelativeTimeString
 
 /**
  * Renders the home feed. Each post exposes tap targets for like, comment,

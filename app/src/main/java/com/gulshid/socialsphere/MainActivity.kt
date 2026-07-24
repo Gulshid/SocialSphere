@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.example.socialsphere.databinding.ActivityMainBinding
-import com.example.socialsphere.post.CreatePostActivity
+import com.gulshid.socialsphere.databinding.ActivityMainBinding
+import com.gulshid.socialsphere.post.CreatePostActivity
 
 /**
  * Shell activity: hosts the bottom navigation bar and the NavHostFragment

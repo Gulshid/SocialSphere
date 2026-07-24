@@ -1,9 +1,9 @@
-package com.example.socialsphere.data.repository
+package com.gulshid.socialsphere.data.repository
 
 import android.net.Uri
-import com.example.socialsphere.data.model.Comment
-import com.example.socialsphere.data.model.Post
-import com.example.socialsphere.utils.Resource
+import com.gulshid.socialsphere.data.model.Comment
+import com.gulshid.socialsphere.data.model.Post
+import com.gulshid.socialsphere.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore

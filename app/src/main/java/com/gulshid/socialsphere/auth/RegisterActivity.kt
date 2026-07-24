@@ -1,18 +1,18 @@
-package com.example.socialsphere.auth
+package com.gulshid.socialsphere.auth
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.socialsphere.MainActivity
-import com.example.socialsphere.R
-import com.example.socialsphere.data.repository.AuthRepository
-import com.example.socialsphere.databinding.ActivityRegisterBinding
-import com.example.socialsphere.utils.Resource
-import com.example.socialsphere.utils.gone
-import com.example.socialsphere.utils.isValidEmail
-import com.example.socialsphere.utils.toast
-import com.example.socialsphere.utils.visible
+import com.gulshid.socialsphere.MainActivity
+import com.gulshid.socialsphere.R
+import com.gulshid.socialsphere.data.repository.AuthRepository
+import com.gulshid.socialsphere.databinding.ActivityRegisterBinding
+import com.gulshid.socialsphere.utils.Resource
+import com.gulshid.socialsphere.utils.gone
+import com.gulshid.socialsphere.utils.isValidEmail
+import com.gulshid.socialsphere.utils.toast
+import com.gulshid.socialsphere.utils.visible
 import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {

@@ -1,12 +1,12 @@
-package com.example.socialsphere.ui.search
+package com.gulshid.socialsphere.ui.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialsphere.data.model.User
-import com.example.socialsphere.data.repository.UserRepository
-import com.example.socialsphere.utils.Resource
+import com.gulshid.socialsphere.data.model.User
+import com.gulshid.socialsphere.data.repository.UserRepository
+import com.gulshid.socialsphere.utils.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

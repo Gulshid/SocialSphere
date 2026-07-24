@@ -1,4 +1,4 @@
-package com.example.socialsphere.ui.profile
+package com.gulshid.socialsphere.ui.profile
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,17 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
-import com.example.socialsphere.R
-import com.example.socialsphere.auth.LoginActivity
-import com.example.socialsphere.data.model.Post
-import com.example.socialsphere.data.model.User
-import com.example.socialsphere.databinding.FragmentProfileBinding
-import com.example.socialsphere.post.PostDetailActivity
-import com.example.socialsphere.utils.Resource
-import com.example.socialsphere.utils.gone
-import com.example.socialsphere.utils.toCompactCount
-import com.example.socialsphere.utils.toast
-import com.example.socialsphere.utils.visible
+import com.gulshid.socialsphere.R
+import com.gulshid.socialsphere.auth.LoginActivity
+import com.gulshid.socialsphere.data.model.Post
+import com.gulshid.socialsphere.data.model.User
+import com.gulshid.socialsphere.databinding.FragmentProfileBinding
+import com.gulshid.socialsphere.post.PostDetailActivity
+import com.gulshid.socialsphere.utils.Resource
+import com.gulshid.socialsphere.utils.gone
+import com.gulshid.socialsphere.utils.toCompactCount
+import com.gulshid.socialsphere.utils.toast
+import com.gulshid.socialsphere.utils.visible
 
 class ProfileFragment : Fragment() {
 
