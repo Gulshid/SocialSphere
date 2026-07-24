@@ -1,20 +1,41 @@
 package com.gulshid.socialsphere
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.example.socialsphere.databinding.ActivityMainBinding
+import com.example.socialsphere.post.CreatePostActivity
 
+/**
+ * Shell activity: hosts the bottom navigation bar and the NavHostFragment
+ * containing Home, Search, Notifications and Profile. The "Create" tab is
+ * intercepted to launch CreatePostActivity instead of being a graph destination.
+ */
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.navHostFragment) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        binding.bottomNav.setupWithNavController(navController)
+
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            if (item.itemId == R.id.createPostAction) {
+                startActivity(Intent(this, CreatePostActivity::class.java))
+                false // don't mark this tab as selected
+            } else {
+                navController.navigate(item.itemId)
+                true
+            }
         }
     }
 }
