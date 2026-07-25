@@ -99,6 +99,32 @@ class UserRepository(
         }
     }
 
+    /** Users who follow [uid], newest edge first isn't guaranteed (no ordering field on the edge doc). */
+    suspend fun getFollowers(uid: String): Resource<List<User>> {
+        return try {
+            val edges = usersCollection.document(uid).collection("followers").get().await()
+            val users = edges.documents.mapNotNull { edge ->
+                usersCollection.document(edge.id).get().await().toObject(User::class.java)
+            }
+            Resource.Success(users)
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Failed to load followers.")
+        }
+    }
+
+    /** Users that [uid] follows. */
+    suspend fun getFollowing(uid: String): Resource<List<User>> {
+        return try {
+            val edges = usersCollection.document(uid).collection("following").get().await()
+            val users = edges.documents.mapNotNull { edge ->
+                usersCollection.document(edge.id).get().await().toObject(User::class.java)
+            }
+            Resource.Success(users)
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Failed to load following.")
+        }
+    }
+
     suspend fun searchUsers(query: String): Resource<List<User>> {
         return try {
             val snapshot = usersCollection

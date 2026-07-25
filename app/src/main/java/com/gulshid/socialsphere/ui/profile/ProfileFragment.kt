@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.gulshid.socialsphere.R
 import com.gulshid.socialsphere.auth.LoginActivity
 import com.gulshid.socialsphere.data.model.Post
@@ -45,6 +46,17 @@ class ProfileFragment : Fragment() {
 
         binding.btnEditProfile.setOnClickListener {
             startActivity(Intent(requireContext(), EditProfileActivity::class.java))
+        }
+
+        binding.followersColumn.setOnClickListener {
+            FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
+                FollowListActivity.start(requireContext(), uid, FollowListType.FOLLOWERS)
+            }
+        }
+        binding.followingColumn.setOnClickListener {
+            FirebaseAuth.getInstance().currentUser?.uid?.let { uid ->
+                FollowListActivity.start(requireContext(), uid, FollowListType.FOLLOWING)
+            }
         }
 
         binding.ivLogout.setOnClickListener {

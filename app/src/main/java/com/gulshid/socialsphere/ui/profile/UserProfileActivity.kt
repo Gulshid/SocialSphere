@@ -54,6 +54,13 @@ class UserProfileActivity : AppCompatActivity() {
 
         binding.btnFollow.setOnClickListener { viewModel.toggleFollow() }
 
+        binding.followersColumn.setOnClickListener {
+            FollowListActivity.start(this, uid, FollowListType.FOLLOWERS)
+        }
+        binding.followingColumn.setOnClickListener {
+            FollowListActivity.start(this, uid, FollowListType.FOLLOWING)
+        }
+
         viewModel.userState.observe(this) { state -> renderUser(state) }
         viewModel.postsState.observe(this) { state -> renderPosts(state) }
         viewModel.isFollowing.observe(this) { following -> renderFollowButton(following) }
