@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.gulshid.socialsphere.data.model.Post
 import com.gulshid.socialsphere.databinding.FragmentHomeBinding
 import com.gulshid.socialsphere.post.PostDetailActivity
@@ -17,6 +20,7 @@ import com.gulshid.socialsphere.utils.Resource
 import com.gulshid.socialsphere.utils.gone
 import com.gulshid.socialsphere.utils.toast
 import com.gulshid.socialsphere.utils.visible
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(), PostAdapter.PostActionListener {
 
@@ -110,6 +114,43 @@ class HomeFragment : Fragment(), PostAdapter.PostActionListener {
         val intent = Intent(requireContext(), UserProfileActivity::class.java)
         intent.putExtra(UserProfileActivity.EXTRA_UID, post.authorId)
         startActivity(intent)
+    }
+
+    override fun onMoreClicked(post: Post, anchor: View, position: Int) {
+        val isOwnPost = post.authorId == FirebaseAuth.getInstance().currentUser?.uid
+        val popup = PopupMenu(requireContext(), anchor)
+        if (isOwnPost) {
+            popup.menu.add("Delete post")
+        } else {
+            popup.menu.add("Report post")
+        }
+        popup.setOnMenuItemClickListener { item ->
+            when (item.title) {
+                "Delete post" -> confirmDeletePost(post)
+                "Report post" -> requireContext().toast("Post reported. Thanks for letting us know.")
+            }
+            true
+        }
+        popup.show()
+    }
+
+    private fun confirmDeletePost(post: Post) {
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete post?")
+            .setMessage("This can't be undone.")
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Delete") { _, _ ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val (updatedList, result) = viewModel.deletePost(post, adapter.currentList)
+                    if (result is Resource.Success) {
+                        adapter.submitList(updatedList)
+                        requireContext().toast("Post deleted.")
+                    } else if (result is Resource.Error) {
+                        requireContext().toast(result.message)
+                    }
+                }
+            }
+            .show()
     }
 
     private fun openPostDetail(post: Post) {

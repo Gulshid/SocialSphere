@@ -175,4 +175,17 @@ class PostRepository(
             Resource.Error(e.message ?: "Failed to load comments.")
         }
     }
+
+    /** Deletes a post (only the author is allowed to, enforced by Firestore rules too). */
+    suspend fun deletePost(postId: String, authorId: String): Resource<Unit> {
+        val uid = auth.currentUser?.uid ?: return Resource.Error("Not authenticated.")
+        if (uid != authorId) return Resource.Error("You can only delete your own posts.")
+        return try {
+            postsCollection.document(postId).delete().await()
+            usersCollection.document(uid).update("postsCount", FieldValue.increment(-1)).await()
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Failed to delete post.")
+        }
+    }
 }

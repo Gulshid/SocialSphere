@@ -93,4 +93,15 @@ class HomeViewModel(
 
         return updatedList
     }
+
+    /** Deletes [post] and returns the updated list with it removed, for optimistic UI update. */
+    suspend fun deletePost(post: Post, currentList: List<Post>): Pair<List<Post>, Resource<Unit>> {
+        val result = postRepository.deletePost(post.postId, post.authorId)
+        if (result is Resource.Success) {
+            val updated = currentList.filterNot { it.postId == post.postId }
+            currentPosts = updated
+            return updated to result
+        }
+        return currentList to result
+    }
 }

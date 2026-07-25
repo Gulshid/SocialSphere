@@ -27,6 +27,7 @@ class PostAdapter(
         fun onShareClicked(post: Post)
         fun onPostClicked(post: Post)
         fun onAuthorClicked(post: Post)
+        fun onMoreClicked(post: Post, anchor: android.view.View, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -78,6 +79,7 @@ class PostAdapter(
             binding.tvViewComments.setOnClickListener { listener.onCommentClicked(post) }
             binding.ivAvatar.setOnClickListener { listener.onAuthorClicked(post) }
             binding.tvUsername.setOnClickListener { listener.onAuthorClicked(post) }
+            binding.ivMore.setOnClickListener { listener.onMoreClicked(post, binding.ivMore, bindingAdapterPosition) }
         }
     }
 

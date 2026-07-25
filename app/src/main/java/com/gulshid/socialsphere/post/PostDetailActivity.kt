@@ -1,19 +1,25 @@
 package com.gulshid.socialsphere.post
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.gulshid.socialsphere.R
 import com.gulshid.socialsphere.data.model.Post
 import com.gulshid.socialsphere.databinding.ActivityPostDetailBinding
 import com.gulshid.socialsphere.utils.Resource
 import com.gulshid.socialsphere.utils.gone
+import com.gulshid.socialsphere.utils.toCompactCount
+import com.gulshid.socialsphere.utils.toRelativeTimeString
 import com.gulshid.socialsphere.utils.toast
 import com.gulshid.socialsphere.utils.visible
 
 /**
- * Shows a post's comment thread and lets the user add new comments.
+ * Shows a single post — image, caption and like button — with its full
+ * comment thread below, and lets the user add new comments.
  * Expects a [Post] Parcelable passed via [EXTRA_POST].
  */
 class PostDetailActivity : AppCompatActivity() {
@@ -43,15 +49,46 @@ class PostDetailActivity : AppCompatActivity() {
         }
 
         binding.toolbar.setNavigationOnClickListener { finish() }
+        viewModel.setInitialPost(post)
 
         commentAdapter = CommentAdapter()
         binding.rvComments.layoutManager = LinearLayoutManager(this)
         binding.rvComments.adapter = commentAdapter
 
         binding.ivSendComment.setOnClickListener { submitComment() }
+        binding.ivLike.setOnClickListener { viewModel.toggleLike() }
+        binding.ivShare.setOnClickListener { sharePost() }
 
+        viewModel.post.observe(this) { renderPost(it) }
         viewModel.commentsState.observe(this) { state -> renderComments(state) }
         viewModel.loadComments(post.postId)
+    }
+
+    private fun renderPost(post: Post) {
+        binding.tvUsername.text = post.authorUsername
+        binding.tvTimestamp.text = post.timestamp.toRelativeTimeString()
+        binding.tvCaption.text = post.caption
+        binding.tvLikeCount.text = "${post.likeCount.toCompactCount()} likes"
+
+        val isLiked = viewModel.currentUserId != null && post.isLikedBy(viewModel.currentUserId!!)
+        binding.ivLike.setImageResource(
+            if (isLiked) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
+        )
+
+        Glide.with(binding.ivPostImage).load(post.imageUrl).centerCrop().into(binding.ivPostImage)
+        Glide.with(binding.ivAvatar)
+            .load(post.authorProfileImageUrl)
+            .placeholder(R.drawable.ic_placeholder_avatar)
+            .circleCrop()
+            .into(binding.ivAvatar)
+    }
+
+    private fun sharePost() {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, "Check out this post on SocialSphere: ${post.imageUrl}")
+        }
+        startActivity(Intent.createChooser(shareIntent, "Share post via"))
     }
 
     private fun submitComment() {

@@ -1,0 +1,87 @@
+rules_version = '2';
+
+// SocialSphere — Firestore Security Rules
+//
+// WHY YOU NEED THIS FILE:
+// The "PERMISSION_DENIED: Missing or insufficient permissions" error on the
+// Notifications tab (and silent failures on like/follow/comment) happens
+// because no security rules have been published for this Firebase project.
+// By default, a brand-new Firestore database denies ALL reads and writes.
+// The app code was already correct — this is a one-time server-side config
+// step, not a bug in the Android app itself.
+//
+// HOW TO APPLY:
+//   Option A (Firebase Console):
+//     1. Open console.firebase.google.com -> your project -> Firestore Database -> Rules
+//     2. Paste the contents below and click "Publish".
+//   Option B (Firebase CLI):
+//     firebase deploy --only firestore:rules
+//     (run from this project's root, with this file present)
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // users/{uid} — public profile fields, only the owner may write
+    match /users/{uid} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid);
+      allow delete: if false;
+
+      // users/{uid}/following/{targetUid} and users/{uid}/followers/{followerUid}
+      // Only the owning user's own subcollections are writable by them; the
+      // "followers" subcollection is written by the OTHER user's follow action,
+      // so we allow any signed-in user to write their own edge on either side.
+      match /following/{targetUid} {
+        allow read: if isSignedIn();
+        allow write: if isOwner(uid);
+      }
+      match /followers/{followerUid} {
+        allow read: if isSignedIn();
+        allow write: if isOwner(followerUid);
+      }
+    }
+
+    // posts/{postId} — readable by anyone signed in, writable by the author,
+    // likes/likeCount can be updated by any signed-in user (toggle-like).
+    match /posts/{postId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
+      allow update: if isSignedIn() &&
+        (resource.data.authorId == request.auth.uid ||
+         request.resource.data.diff(resource.data).affectedKeys()
+           .hasOnly(['likedBy', 'likeCount', 'commentCount']));
+      allow delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
+
+      // posts/{postId}/comments/{commentId}
+      match /comments/{commentId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
+        allow update, delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
+      }
+    }
+
+    // notifications/{recipientId}/items/{notificationId}
+    // Only the recipient can read their own notifications. Any signed-in
+    // user can create a notification FOR someone else (e.g. when they like
+    // or comment on that person's post) but never for themselves, and never
+    // read/edit someone else's notification list.
+    match /notifications/{recipientId} {
+      match /items/{notificationId} {
+        allow read: if isOwner(recipientId);
+        allow create: if isSignedIn() &&
+          request.resource.data.recipientId == recipientId &&
+          request.resource.data.actorId == request.auth.uid &&
+          request.auth.uid != recipientId;
+        allow update, delete: if isOwner(recipientId);
+      }
+    }
+  }
+}
