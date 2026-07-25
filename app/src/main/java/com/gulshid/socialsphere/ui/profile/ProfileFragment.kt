@@ -89,6 +89,7 @@ class ProfileFragment : Fragment() {
     private fun renderPosts(state: Resource<List<Post>>) {
         if (state is Resource.Success) {
             gridAdapter.submitList(state.data)
+            binding.emptyState.visibility = if (state.data.isEmpty()) View.VISIBLE else View.GONE
         }
     }
 

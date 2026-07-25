@@ -40,7 +40,7 @@ class HomeFragment : Fragment(), PostAdapter.PostActionListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = PostAdapter(viewModel.currentUserId, this)
+        adapter = PostAdapter(viewModel.currentUserId, this, viewLifecycleOwner.lifecycleScope)
         binding.rvFeed.layoutManager = LinearLayoutManager(requireContext())
         binding.rvFeed.adapter = adapter
 
